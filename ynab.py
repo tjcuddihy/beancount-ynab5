@@ -313,7 +313,7 @@ if __name__ == '__main__':
 
     def fmt_memo(memo):
         if memo:
-            return f'"{memo}"'
+            return f'{memo}'
         else:
             return ''
 
