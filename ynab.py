@@ -326,7 +326,8 @@ if __name__ == '__main__':
 
     def fmt_memo(memo):
         if memo:
-            return f'"{memo}"'
+            memo_fmt = memo.replace('"', '')
+            return f'"{memo_fmt}"'
         else:
             return ''
 
@@ -380,6 +381,14 @@ if __name__ == '__main__':
         # Deduplication -- don't process transactions we've already seen
         if t.id in seen_transactions:
             logging.debug(f'Skipping duplicate transaction: {t.date} {t.payee_name}')
+            if t.transfer_transaction_id:
+                logging.debug(f'         duplicate tran. also has transfer; adding to seen_transactions: {t.transfer_transaction_id}')
+                seen_transactions.add(t.transfer_transaction_id)
+            if t.subtransactions:
+                for sub in t.subtransactions:
+                    # We need to deduplicate any transfers that happen in a subtransaction...
+                    logging.debug(f'         duplicate tran. also has sub_trans.; adding to seen_transactions: {sub.transfer_transaction_id}')
+                    if sub.transfer_transaction_id: seen_transactions.add(sub.transfer_transaction_id)
             continue
         if t.transfer_transaction_id in seen_transactions:
             logging.debug(f'Skipping duplicate transfer transaction: {t.date} {t.payee_name}')
