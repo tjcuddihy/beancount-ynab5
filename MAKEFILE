@@ -1,0 +1,16 @@
+BUDGET = Aus
+BEANFILE = kandt.beanfile
+
+.PHONY: all ynab token venv
+include token.sh
+
+all: ynab
+
+ynab:
+	python ./ynab.py --ynab-token ${YNABTOKEN} --budget ${BUDGET} --verbose ${BEANFILE}
+
+token:
+	source token.sh
+
+venv:
+	source ./venv/bin/activate
